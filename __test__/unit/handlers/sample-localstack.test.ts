@@ -10,7 +10,7 @@ import {
 } from "@aws-sdk/client-s3";
 import * as fs from "fs";
 import * as path from "path";
-import { handler } from "../src/lambda/handlers/sample-localstack";
+import { handler } from "../../../src/lambda/handlers/sample-localstack";
 
 const awsConfig = {
   endpoint: "https://s3.localhost.localstack.cloud:4566",
