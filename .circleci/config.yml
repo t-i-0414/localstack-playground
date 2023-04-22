@@ -1,0 +1,34 @@
+version: 2.1
+
+jobs:
+  test_and_build:
+    docker:
+      - image: cimg/node:18.16.0
+      - image: localstack/localstack:2.0.1
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-dependencies-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install npm dependencies
+          command: |
+            set -x
+            [[ -d node_modules ]] || npm ci
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
+      - run:
+          name: Test unit
+          command: |
+            set -x
+            npm run unit-test
+
+workflows:
+  test_workflows:
+    jobs:
+      - test_and_build:
+          filters:
+            branches:
+              only:
+                - /.*/
